@@ -1,5 +1,42 @@
 # Django学习路线图与进度追踪
 
+## Django项目结构图
+
+```
+mysite/                  # 项目根目录
+│
+├── manage.py            # Django命令行工具
+│
+├── mysite/              # 项目主包
+│   ├── __init__.py      # 空文件，标识Python包
+│   ├── settings.py      # 项目配置文件
+│   ├── urls.py          # 项目URL配置
+│   ├── asgi.py          # ASGI兼容的Web服务器入口
+│   └── wsgi.py          # WSGI兼容的Web服务器入口
+│
+├── blog/                # 应用目录
+│   ├── __init__.py      # 空文件，标识Python包
+│   ├── admin.py         # Django管理后台配置
+│   ├── apps.py          # 应用配置
+│   ├── migrations/      # 数据库迁移文件目录
+│   │   └── __init__.py  # 空文件，标识Python包
+│   ├── models.py        # 数据模型定义
+│   ├── tests.py         # 测试代码
+│   ├── urls.py          # 应用URL配置
+│   └── views.py         # 视图函数/类
+│
+├── templates/           # 全局模板目录
+│   ├── base.html        # 基础模板
+│   └── blog/            # 应用专用模板
+│       ├── index.html   # 博客首页模板
+│       └── detail.html  # 博客详情页模板
+│
+└── static/              # 静态文件目录
+    ├── css/             # CSS文件
+    ├── js/              # JavaScript文件
+    └── images/          # 图片文件
+```
+
 这是一份Django全面学习计划，按照循序渐进的方式组织，从基础概念到高级特性，最终构建一个完整的博客系统。每完成一项任务，可以在方框中打勾(✓)标记进度。
 
 ## 第一阶段：环境准备与基础知识 (1周)

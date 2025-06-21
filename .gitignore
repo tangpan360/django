@@ -1,0 +1,59 @@
+# Python 编译文件
+*.pyc
+__pycache__
+*.pyo
+*.pyd
+*.db
+
+# Django 自动生成的文件
+db.sqlite3
+*.log
+*.pot
+*.mo
+*.po
+manage.py
+
+# 虚拟环境
+venv/
+env/
+ENV/
+virtualenv/
+
+# IDE 配置文件
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Node.js 相关（如果你使用前端工具）
+node_modules/
+dist/
+build/
+
+# macOS/Linux 系统文件
+.DS_Store
+Thumbs.db
+
+# 配置相关（本地配置文件不提交）
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# 日志和缓存
+logs/
+cache/
+sessions/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Media 和静态文件（开发时可能上传的文件）
+/media/
+/staticfiles/
+/collected_static/
+
+# Coverage report
+.coverage
+htmlcov/

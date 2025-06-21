@@ -62,28 +62,28 @@ mysite/                  # 项目根目录
 ## 第二阶段：模型与数据库 (2周)
 
 ### 模型定义
-- [ ] 了解Django ORM基础概念
-- [ ] 学习常用字段类型(CharField, TextField, DateTimeField等)
-- [ ] 掌握字段选项(max_length, null, blank, default等)
-- [ ] 创建模型方法(包括`__str__`方法)
+- [✓] 了解Django ORM基础概念
+- [✓] 学习常用字段类型(CharField, TextField, DateTimeField等)
+- [✓] 掌握字段选项(max_length, null, blank, default等)
+- [✓] 创建模型方法(包括`__str__`方法)
 
 ### 数据库操作
-- [ ] 执行数据库迁移命令(makemigrations, migrate)
-- [ ] 学习基本查询操作(all, get, filter, exclude)
-- [ ] 掌握高级查询(Q对象, F对象, 聚合函数)
-- [ ] 理解模型关系(ForeignKey, ManyToManyField, OneToOneField)
+- [✓] 执行数据库迁移命令(makemigrations, migrate)
+- [✓] 学习基本查询操作(all, get, filter, exclude)
+- [✓] 掌握高级查询(Q对象, F对象, 聚合函数)
+- [✓] 理解模型关系(ForeignKey, ManyToManyField, OneToOneField)
 
 ### Django Admin
-- [ ] 配置Admin站点
-- [ ] 注册模型到Admin
-- [ ] 自定义Admin界面(ModelAdmin类)
-- [ ] 添加搜索和过滤功能
+- [✓] 配置Admin站点
+- [✓] 注册模型到Admin
+- [✓] 自定义Admin界面(ModelAdmin类)
+- [✓] 添加搜索和过滤功能
 
 ### 实践任务
-- [ ] 设计博客数据模型(用户、文章、分类、评论)
-- [ ] 创建模型间的关系
-- [ ] 注册模型到Admin后台
-- [ ] 通过Admin添加一些测试数据
+- [✓] 设计博客数据模型(用户、文章、分类、评论)
+- [✓] 创建模型间的关系
+- [✓] 注册模型到Admin后台
+- [✓] 通过Admin添加一些测试数据
 
 ## 第三阶段：视图与URL (1-2周)
 

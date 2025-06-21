@@ -1,0 +1,23 @@
+{% extends "blog/base.html" %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ post.title }}</h1>
+    <p class="date">
+        发布于 {{ post.publish }} 作者 {{ post.author }}
+    </p>
+    {{ post.body|linebreaks }}
+    
+    <h2>评论 ({{ comments.count }})</h2>
+    {% for comment in comments %}
+        <div class="comment">
+            <p class="info">
+                评论 {{ forloop.counter }} 由 {{ comment.name }} 于 {{ comment.created }} 发表
+            </p>
+            {{ comment.body|linebreaks }}
+        </div>
+    {% empty %}
+        <p>暂无评论。</p>
+    {% endfor %}
+{% endblock %}

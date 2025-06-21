@@ -20,10 +20,10 @@ from django.http import HttpResponse  # 导入HttpResponse
 
 # 创建一个简单的根路径视图函数
 def home(request):
-    return HttpResponse("欢迎来到我的Django网站首页！")
+    return HttpResponse("欢迎来到我的Django网站首页！<br><a href='/blog/'>访问博客</a>")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('blog/', include('blog.urls')),
+    path('blog/', include('blog.urls', namespace='blog')),
     path('', home, name='home'),  # 添加根路径URL模式
 ]

@@ -16,7 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.http import HttpResponse  # 导入HttpResponse
+
+# 创建一个简单的根路径视图函数
+def home(request):
+    return HttpResponse("欢迎来到我的Django网站首页！")
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    path('admin/', admin.site.urls),
+    path('blog/', include('blog.urls')),
+    path('', home, name='home'),  # 添加根路径URL模式
 ]

@@ -42,22 +42,22 @@ mysite/                  # 项目根目录
 ## 第一阶段：环境准备与基础知识 (1周)
 
 ### 开发环境配置
-- [ ] 安装Python并创建虚拟环境
-- [ ] 安装 Django 最新版本
-- [ ] 创建第一个Django项目 (`django-admin startproject mysite`)
-- [ ] 运行开发服务器并访问 (`python manage.py runserver`)
+- [✓] 安装Python并创建虚拟环境
+- [✓] 安装 Django 最新版本
+- [✓] 创建第一个Django项目 (`django-admin startproject mysite`)
+- [✓] 运行开发服务器并访问 (`python manage.py runserver`)
 
 ### Django基础概念
-- [ ] 学习MTV架构模式(Model-Template-View)
-- [ ] 了解Django项目结构与文件作用
-- [ ] 掌握settings.py配置文件的主要设置项
-- [ ] 理解urls.py路由系统的工作原理
+- [✓] 学习MTV架构模式(Model-Template-View)
+- [✓] 了解Django项目结构与文件作用
+- [✓] 掌握settings.py配置文件的主要设置项
+- [✓] 理解urls.py路由系统的工作原理
 
 ### 实践任务
-- [ ] 创建第一个应用 (`python manage.py startapp blog`)
-- [ ] 在settings.py中注册应用
-- [ ] 创建第一个视图函数并配置URL
-- [ ] 运行并测试应用
+- [✓] 创建第一个应用 (`python manage.py startapp blog`)
+- [✓] 在settings.py中注册应用
+- [✓] 创建第一个视图函数并配置URL
+- [✓] 运行并测试应用
 
 ## 第二阶段：模型与数据库 (2周)
 

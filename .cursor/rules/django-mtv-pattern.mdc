@@ -1,0 +1,61 @@
+---
+description: 当用户询问Django的MVC/MTV架构、模型-模板-视图模式或Django的基本工作流程时提供参考。适用于需要理解Django核心架构概念的场景。
+globs: 
+alwaysApply: false
+---
+# Django MTV架构模式
+
+Django使用MTV(Model-Template-View)架构模式，这是MVC模式的Django变种：
+
+## Model (模型)
+- 定义在`models.py`中
+- 表示数据结构和业务逻辑
+- 每个模型通常映射到数据库中的一张表
+- 示例：
+```python
+class Article(models.Model):
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    pub_date = models.DateTimeField('发布日期')
+```
+
+## Template (模板)
+- 存放在`templates/`目录中
+- 负责数据的展示逻辑
+- 使用Django模板语言(DTL)
+- 示例：
+```html
+<h1>{{ article.title }}</h1>
+<div>{{ article.content }}</div>
+<p>发布日期: {{ article.pub_date }}</p>
+```
+
+## View (视图)
+- 定义在`views.py`中
+- 处理HTTP请求和响应
+- 从Model获取数据并传递给Template
+- 可以是函数视图或类视图
+- 示例：
+```python
+def article_detail(request, article_id):
+    article = Article.objects.get(pk=article_id)
+    return render(request, 'articles/detail.html', {'article': article})
+```
+
+## URL配置
+- 定义在`urls.py`中
+- 将URL模式映射到视图
+- 示例：
+```python
+urlpatterns = [
+    path('articles/<int:article_id>/', views.article_detail, name='article_detail'),
+]
+```
+
+## 数据流向
+1. 用户访问URL
+2. Django根据URL配置找到对应的View
+3. View处理请求，从Model获取数据
+4. View将数据传递给Template
+5. Template渲染HTML并返回给用户
+

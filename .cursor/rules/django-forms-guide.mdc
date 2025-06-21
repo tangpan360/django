@@ -1,0 +1,165 @@
+---
+description: 当用户需要处理表单创建、验证、渲染或提交数据时提供指导。适用于实现用户输入处理、数据验证或构建交互式表单的场景。
+globs: 
+alwaysApply: false
+---
+# Django表单处理指南
+
+Django表单系统用于处理HTML表单的创建、验证和处理。
+
+## 表单定义
+
+### 普通表单
+```python
+from django import forms
+
+class ContactForm(forms.Form):
+    name = forms.CharField(max_length=100, label='姓名')
+    email = forms.EmailField(label='邮箱')
+    message = forms.CharField(widget=forms.Textarea, label='留言')
+    subscribe = forms.BooleanField(required=False, label='订阅新闻')
+```
+
+### 模型表单
+```python
+from django import forms
+from .models import Article
+
+class ArticleForm(forms.ModelForm):
+    class Meta:
+        model = Article
+        fields = ['title', 'content', 'category', 'tags']
+        # 或使用 fields = '__all__' 包含所有字段
+        # 使用 exclude = ['author'] 排除特定字段
+```
+
+## 常用字段类型
+
+- `CharField` - 字符串字段
+- `IntegerField` - 整数字段
+- `FloatField` - 浮点数字段
+- `DecimalField` - 十进制数字段
+- `BooleanField` - 布尔字段
+- `ChoiceField` - 选择字段
+- `MultipleChoiceField` - 多选字段
+- `DateField` - 日期字段
+- `DateTimeField` - 日期时间字段
+- `EmailField` - 邮箱字段
+- `FileField` - 文件字段
+- `ImageField` - 图片字段
+
+## 字段选项
+
+```python
+name = forms.CharField(
+    max_length=100,          # 最大长度
+    required=True,           # 是否必填
+    label='姓名',            # 标签文本
+    help_text='请输入您的姓名', # 帮助文本
+    initial='张三',          # 初始值
+    widget=forms.TextInput(  # 自定义小部件
+        attrs={'class': 'form-control', 'placeholder': '请输入姓名'}
+    )
+)
+```
+
+## 表单验证
+
+### 内置验证
+Django表单字段自带基本验证功能。
+
+### 自定义验证方法
+```python
+class ContactForm(forms.Form):
+    name = forms.CharField(max_length=100)
+    email = forms.EmailField()
+    
+    def clean_name(self):
+        """验证特定字段"""
+        name = self.cleaned_data['name']
+        if len(name) < 3:
+            raise forms.ValidationError("姓名至少需要3个字符")
+        return name
+    
+    def clean(self):
+        """验证整个表单"""
+        cleaned_data = super().clean()
+        name = cleaned_data.get('name')
+        email = cleaned_data.get('email')
+        
+        if name and email and name.lower() in email.lower():
+            raise forms.ValidationError("邮箱不能包含姓名")
+        
+        return cleaned_data
+```
+
+## 在视图中使用表单
+
+### 函数视图
+```python
+def contact_view(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            # 处理表单数据
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            # 执行操作，如保存到数据库或发送邮件
+            return redirect('success_page')
+    else:
+        form = ContactForm()
+    
+    return render(request, 'contact.html', {'form': form})
+```
+
+### 类视图
+```python
+from django.views.generic.edit import FormView
+
+class ContactView(FormView):
+    template_name = 'contact.html'
+    form_class = ContactForm
+    success_url = '/success/'
+    
+    def form_valid(self, form):
+        # 处理表单数据
+        name = form.cleaned_data['name']
+        email = form.cleaned_data['email']
+        # 执行操作
+        return super().form_valid(form)
+```
+
+## 在模板中渲染表单
+
+### 基本渲染
+```html
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">提交</button>
+</form>
+```
+
+### 手动渲染
+```html
+<form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+        {{ form.name.errors }}
+        <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+        {{ form.name }}
+        {% if form.name.help_text %}
+        <small class="form-text text-muted">{{ form.name.help_text }}</small>
+        {% endif %}
+    </div>
+    <!-- 其他字段 -->
+    <button type="submit">提交</button>
+</form>
+```
+
+## 最佳实践
+
+1. 使用模型表单自动处理数据保存
+2. 实现自定义验证规则确保数据质量
+3. 使用表单集(Formsets)处理多个相关表单
+4. 在模板中使用crispy-forms等库美化表单外观

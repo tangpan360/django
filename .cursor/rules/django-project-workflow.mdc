@@ -1,0 +1,314 @@
+---
+description: 当用户需要了解Django项目的完整开发流程、最佳实践或项目组织方法时提供指导。适用于新项目启动、开发流程规划或项目结构优化的场景。
+globs: 
+alwaysApply: false
+---
+# Django项目开发工作流程
+
+## 1. 项目初始化
+
+### 创建虚拟环境
+```bash
+# 创建虚拟环境
+conda create -n "name" python=3.x
+
+# 激活虚拟环境
+conda activate "name"
+```
+
+### 安装Django
+```bash
+pip install django
+```
+
+### 创建项目
+```bash
+django-admin startproject myproject
+cd myproject
+```
+
+### 创建应用
+```bash
+python manage.py startapp myapp
+```
+
+### 注册应用
+在`settings.py`中添加应用：
+```python
+INSTALLED_APPS = [
+    # ...
+    'myapp',
+]
+```
+
+## 2. 数据库设计
+
+### 定义模型
+在`myapp/models.py`中定义模型：
+```python
+from django.db import models
+
+class Category(models.Model):
+    name = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.name
+
+class Article(models.Model):
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return self.title
+```
+
+### 创建迁移文件
+```bash
+python manage.py makemigrations
+```
+
+### 应用迁移
+```bash
+python manage.py migrate
+```
+
+## 3. 视图与URL配置
+
+### 创建视图
+在`myapp/views.py`中创建视图：
+```python
+from django.shortcuts import render, get_object_or_404
+from .models import Article, Category
+
+def article_list(request):
+    articles = Article.objects.all()
+    return render(request, 'myapp/article_list.html', {'articles': articles})
+
+def article_detail(request, article_id):
+    article = get_object_or_404(Article, pk=article_id)
+    return render(request, 'myapp/article_detail.html', {'article': article})
+```
+
+### 配置URL
+创建`myapp/urls.py`：
+```python
+from django.urls import path
+from . import views
+
+app_name = 'myapp'
+urlpatterns = [
+    path('articles/', views.article_list, name='article_list'),
+    path('articles/<int:article_id>/', views.article_detail, name='article_detail'),
+]
+```
+
+在主`urls.py`中包含应用URL：
+```python
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('myapp.urls')),
+]
+```
+
+## 4. 模板开发
+
+### 创建模板目录
+```
+myapp/
+  templates/
+    myapp/
+      base.html
+      article_list.html
+      article_detail.html
+```
+
+### 编写基础模板
+```html
+<!-- base.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}我的网站{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <h1>我的网站</h1>
+        <nav>
+            <a href="{% url 'myapp:article_list' %}">文章列表</a>
+        </nav>
+    </header>
+    
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    
+    <footer>
+        <p>&copy; 2023 我的网站</p>
+    </footer>
+</body>
+</html>
+```
+
+### 编写具体页面模板
+```html
+<!-- article_list.html -->
+{% extends "myapp/base.html" %}
+
+{% block title %}文章列表{% endblock %}
+
+{% block content %}
+    <h2>文章列表</h2>
+    <ul>
+        {% for article in articles %}
+            <li>
+                <a href="{% url 'myapp:article_detail' article.id %}">{{ article.title }}</a>
+            </li>
+        {% empty %}
+            <li>暂无文章</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+```
+
+## 5. 表单处理
+
+### 创建表单
+在`myapp/forms.py`中创建表单：
+```python
+from django import forms
+from .models import Article
+
+class ArticleForm(forms.ModelForm):
+    class Meta:
+        model = Article
+        fields = ['title', 'content', 'category']
+```
+
+### 处理表单提交
+```python
+from django.shortcuts import render, redirect
+from .forms import ArticleForm
+
+def article_create(request):
+    if request.method == 'POST':
+        form = ArticleForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('myapp:article_list')
+    else:
+        form = ArticleForm()
+    
+    return render(request, 'myapp/article_form.html', {'form': form})
+```
+
+## 6. 用户认证
+
+### 配置认证
+在`settings.py`中配置：
+```python
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+```
+
+### 创建登录视图
+使用Django内置视图：
+```python
+# urls.py
+from django.contrib.auth import views as auth_views
+
+urlpatterns = [
+    # ...
+    path('login/', auth_views.LoginView.as_view(template_name='myapp/login.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+]
+```
+
+## 7. 静态文件处理
+
+### 配置静态文件
+在`settings.py`中：
+```python
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+```
+
+### 创建静态文件目录
+```
+myproject/
+  static/
+    css/
+      style.css
+    js/
+      main.js
+```
+
+### 在模板中使用静态文件
+```html
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+```
+
+## 8. 测试
+
+### 编写测试
+在`myapp/tests.py`中：
+```python
+from django.test import TestCase
+from .models import Article, Category
+
+class ArticleModelTest(TestCase):
+    def setUp(self):
+        self.category = Category.objects.create(name='测试分类')
+        self.article = Article.objects.create(
+            title='测试文章',
+            content='测试内容',
+            category=self.category
+        )
+    
+    def test_article_creation(self):
+        self.assertEqual(self.article.title, '测试文章')
+        self.assertEqual(self.article.category.name, '测试分类')
+```
+
+### 运行测试
+```bash
+python manage.py test
+```
+
+## 9. 部署
+
+### 生产环境设置
+在`settings.py`中：
+```python
+DEBUG = False
+ALLOWED_HOSTS = ['yourdomain.com']
+
+# 安全设置
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+```
+
+### 收集静态文件
+```bash
+python manage.py collectstatic
+```
+
+### 使用WSGI服务器
+```bash
+pip install gunicorn
+gunicorn myproject.wsgi:application
+```
+
+## 10. 持续改进
+
+- 代码重构
+- 性能优化
+- 功能扩展
+- 安全更新

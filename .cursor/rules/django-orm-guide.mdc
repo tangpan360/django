@@ -1,0 +1,113 @@
+---
+description: 当用户处理数据库相关操作、模型定义、查询或数据关系时提供帮助。适用于创建模型、执行数据库查询或优化ORM性能的场景。
+globs: 
+alwaysApply: false
+---
+# Django ORM使用指南
+
+Django的ORM(对象关系映射)允许使用Python代码操作数据库，无需编写原始SQL。
+
+## 模型定义
+
+```python
+from django.db import models
+
+class Author(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+
+    def __str__(self):
+        return self.name
+
+class Book(models.Model):
+    title = models.CharField(max_length=200)
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='books')
+    published_date = models.DateField()
+    price = models.DecimalField(max_digits=6, decimal_places=2)
+    is_published = models.BooleanField(default=True)
+    
+    def __str__(self):
+        return self.title
+```
+
+## 常用字段类型
+
+- `CharField` - 字符串字段
+- `TextField` - 长文本字段
+- `IntegerField` - 整数字段
+- `FloatField` - 浮点数字段
+- `DecimalField` - 十进制数字段
+- `BooleanField` - 布尔字段
+- `DateField` - 日期字段
+- `DateTimeField` - 日期时间字段
+- `EmailField` - 邮箱字段
+- `FileField` - 文件字段
+- `ImageField` - 图片字段
+
+## 关系字段
+
+- `ForeignKey` - 一对多关系
+- `ManyToManyField` - 多对多关系
+- `OneToOneField` - 一对一关系
+
+## 常用查询操作
+
+### 创建对象
+```python
+author = Author.objects.create(name="张三", email="zhangsan@example.com")
+book = Book.objects.create(
+    title="Django入门",
+    author=author,
+    published_date="2023-01-01",
+    price="39.99"
+)
+```
+
+### 查询对象
+```python
+# 获取所有图书
+all_books = Book.objects.all()
+
+# 获取单个对象
+book = Book.objects.get(id=1)
+
+# 过滤对象
+published_books = Book.objects.filter(is_published=True)
+recent_books = Book.objects.filter(published_date__year=2023)
+
+# 排除对象
+non_fiction = Book.objects.exclude(category="fiction")
+
+# 排序
+ordered_books = Book.objects.order_by("title")
+reverse_order = Book.objects.order_by("-published_date")  # 降序
+
+# 链式查询
+result = Book.objects.filter(price__lt=50).exclude(is_published=False).order_by("title")
+```
+
+### 高级查询
+```python
+from django.db.models import Q, F, Count, Sum
+
+# OR查询
+Book.objects.filter(Q(author__name="张三") | Q(author__name="李四"))
+
+# AND查询
+Book.objects.filter(Q(price__lt=50) & Q(is_published=True))
+
+# F表达式(字段比较)
+Book.objects.filter(sales_count__gt=F("stock_count"))
+
+# 聚合查询
+Book.objects.aggregate(total_price=Sum("price"))
+Author.objects.annotate(book_count=Count("books"))
+```
+
+## 最佳实践
+
+1. 使用模型管理器自定义查询逻辑
+2. 使用`select_related`和`prefetch_related`优化查询
+3. 使用事务保证数据一致性
+4. 为频繁查询的字段创建索引
+

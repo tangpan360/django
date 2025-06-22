@@ -1,0 +1,27 @@
+{% extends "blog/base.html" %}
+
+{% block title %}登录{% endblock %}
+
+{% block content %}
+    <h1>登录</h1>
+
+    <!-- 如果表单有错误，显示错误信息 -->
+    {% if form.errors %}
+        <p>用户名或密码不正确，请重试。</p>
+    {% endif %}
+
+    <!-- 表单提交到登录URL -->
+    <form method="post" action="{% url 'login' %}">
+        <!-- CSRF令牌，放置跨站请求伪造 -->
+        {% csrf_token %}
+
+        <!-- 渲染表单字段 -->
+        {{ form.as_p }}
+
+        <!-- 隐藏字段，用于登录成功后的重定向 -->
+        <input type="hidden" name="next" value="{{ next }}">
+
+        <!-- 提交按钮 -->
+        <button type="submit">登录</button>
+    </form>
+{% endblock %}

@@ -15,4 +15,7 @@
         </p>
         <p>{{ post.body|truncatewords:30|linebreaks }}</p>
     {% endfor %}
+
+    <!-- 包含分页导航模板，page_obj是ListView自动提供的分页对象-->
+    {% include "pagination.html" with page=page_obj %}
 {% endblock %}

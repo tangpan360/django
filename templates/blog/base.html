@@ -6,13 +6,47 @@
         <link href="{% static 'css/blog.css' %}" rel="stylesheet">
     </head>
     <body>
+        <div id="header">
+            <span class="logo">我的博客</span>
+            <ul class="menu">
+                <!-- 首页链接，如果当前页面是首页，添加selected类 -->
+                <li {% if request.path == '/' %}class="selected"{% endif %}>
+                    <a href="{% url 'blog:post_list' %}">首页</a>
+                </li>
+
+                <!-- 如果用户已登录，显示写文章链接 -->
+                {% if user.is_authenticated %}
+                    <li>
+                        <a href="{% url 'blog:post_create' %}">写文章</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+
         <div id="content">
             {% block content %}
             {% endblock %}
         </div>
+
         <div id="sidebar">
             <h2>我的博客</h2>
             <p>这是我的博客网站。</p>
+
+            <!-- 根据用户登录状态显示不同内容 -->
+            {% if user.is_authenticated %}
+                <p>你好，{{ user.username }}！
+                    <!-- 使用表单提交而不是链接 -->
+                    <form method="post" action="{% url 'logout' %}" style=""display:inline;>
+                        {% csrf_token %}
+                        <button type="submit" style="background:none;border:none;padding:0;color:#00abff;text-decoration:underline;cursor:pointer;">退出</button>
+                    </form>
+                    <!-- <a href="{% url 'logout' %}">退出</a> -->
+                </p>
+            {% else %}
+                <p>
+                    <a href="{% url 'login' %}">登录</a>
+                </p>
+            {% endif %}
         </div>
     </body>
 </html>

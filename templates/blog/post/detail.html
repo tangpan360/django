@@ -7,6 +7,15 @@
     <p class="date">
         发布于 {{ post.publish }} 作者 {{ post.author }}
     </p>
+
+    <!-- 如果当前用户是文章作者，显示编辑和删除链接 -->
+    {% if user.is_authenticated and post.author == user %}
+        <div class="post-actions">
+            <a href="{% url 'blog:post_edit' post.pk %}">编辑</a>
+            <a href="{% url 'blog:post_delete' post.pk %}">删除</a>
+        </div>
+    {% endif %}
+    
     {{ post.body|linebreaks }}
     
     <h2>评论 ({{ comments.count }})</h2>

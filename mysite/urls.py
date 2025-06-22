@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse  # 导入HttpResponse
+from django.contrib.auth import views as auth_views
 
 # 创建一个简单的根路径视图函数
 def home(request):
@@ -26,4 +27,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('blog/', include('blog.urls', namespace='blog')),
     path('', home, name='home'),  # 添加根路径URL模式
+
+    # 登录和退出URL
+    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
 ]

@@ -4,6 +4,9 @@ from django.views.generic import ListView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
+from django.views.generic.edit import FormMixin
+from .forms import CommentForm
+from django.contrib import messages
 
 # Create your views here.
 from django.http import HttpResponse
@@ -54,10 +57,11 @@ class PostListView(ListView):
 #     return render(request, 'blog/post/detail.html', {'post': post, 'comments': comments})
 
 
-class PostDetailView(DetailView):
+class PostDetailView(FormMixin,DetailView):
     """
-    显示单篇文章的详细内容
+    显示单篇文章的详细内容，并处理评论提交
 
+    FormMixin: 为DetailView添加表单处理功能
     DetailView是Django提供的通用视图，用于显示单个对象的详细信息
     """
     # 指定要使用的模型
@@ -68,6 +72,9 @@ class PostDetailView(DetailView):
 
     # 指定要使用的模板，默认为'blog/post_detail.html'
     template_name = 'blog/post/detail.html'
+
+    # 指定要使用的表单类
+    form_class = CommentForm
 
     def get_queryset(self):
         """
@@ -103,8 +110,49 @@ class PostDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         # 添加文章的活动评论到上下文
         context['comments'] = self.object.comments.filter(active=True)
+        # 添加评论表单到上下文
+        context['comment_form'] = self.get_form()
         return context
+
+    def get_success_url(self):
+        """
+        返回表单提交成功后的重定向URL
+        """
+        # 重定向回当前文章详情页
+        return self.object.get_absolute_url()
     
+    def post(self, request, *args, **kwargs):
+        """
+        处理POST请求，提交评论
+        """
+        # 获取当前文章对象
+        self.object = self.get_object()
+        # 获取表单实例
+        form = self.get_form()
+
+        # 验证表单数据
+        if form.is_valid():
+            # 处理有效的表单数据
+            return self.form_valid(form)
+        else:
+            # 处理无效的表单数据
+            return self.form_invalid(form)
+        
+    def form_valid(self, form):
+        """
+        处理有效的表单数据
+        """
+        # 创建评论对象，但不保存到数据库
+        new_comment = form.save(commit=False)
+        # 设置评论所属的文章
+        new_comment.post = self.object
+        # 保存评论到数据库
+        new_comment.save()
+        # 添加成功消息
+        messages.success(self.request, "评论提交成功！")
+        # 调用父类方法完成表单处理
+        return super().form_valid(form)
+
 
 # 文章创建视图
 class PostCreateView(LoginRequiredMixin, CreateView):

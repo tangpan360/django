@@ -1,0 +1,18 @@
+{% load blog_tags %}
+
+<!-- 评论列表 -->
+<h2>评论 ({{ comments.count }})</h2>
+
+<!-- 显示评论列表 -->
+{% for comment in comments %}
+    <!-- 当comments不为空时执行 -->
+    <div class="comment">
+        <p class="info">
+            评论 {{ forloop.counter }} 由 {{ comment.name }} 于 {{ comment.created|format_date }} 发表
+        </p>
+        {{ comment.body|linebreaks }}
+    </div>
+{% empty %}
+    <!-- 当comments为空时执行 -->
+    <p>暂无评论。</p>
+{% endfor %}

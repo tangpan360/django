@@ -7,6 +7,8 @@ from django.urls import reverse_lazy
 from django.views.generic.edit import FormMixin
 from .forms import CommentForm
 from django.contrib import messages
+from .forms import UserRegistrationForm
+from django.contrib.auth import login
 
 # Create your views here.
 from django.http import HttpResponse
@@ -238,3 +240,25 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
         """
         # 只返回当前用户创建的文章
         return Post.objects.filter(author=self.request.user)
+
+
+class RegisterView(CreateView):
+    """
+    用户注册视图
+
+    使用CreateView通用视图处理用户注册
+    """
+    # 指定使用的表单类
+    form_class = UserRegistrationForm
+    # 指定模板
+    template_name = 'registration/register.html'
+    # 注册成功后重定向到博客首页
+    success_url = reverse_lazy('blog:post_list')
+
+    # 表单有效时的处理
+    def form_valid(self, form):
+        # 保存用户
+        user = form.save()
+        # 自动登录新注册的用户
+        login(self.request, user)
+        return super().form_valid(form)

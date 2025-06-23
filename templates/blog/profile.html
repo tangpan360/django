@@ -1,0 +1,140 @@
+{% extends "blog/base.html" %}
+
+{% block title %}个人资料 - {{ user.username }}{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <h2>个人资料</h2>
+
+    <!-- 显示消息提示 -->
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="row">
+        <!-- 左侧：当前个人资料信息 -->
+        <div class="col-md-4">
+            <div class="profile-info">
+                <h3>{{ user.username }}</h3>
+
+                <!-- 显示头像 -->
+                {% if user.profile.avatar %}
+                <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}的头像" class="profile-avator">
+                {% else %}
+                <div class="on-avatar">暂无头像</div>
+                {% endif %}
+
+                <!-- 显示个人简介 -->
+                <div class="profile-bio">
+                    <h4>个人简介</h4>
+                    <p>{% if user.profile.bio %}{{ user.profile.bio }}{% else %}暂无简介{% endif %}</p>
+                </div>
+
+                <!-- 显示网站链接 -->
+                {% if user.profile.website %}
+                <div class="profile-website">
+                    <h4>个人网站</h4>
+                    <a href="{{ user.profile.website }}" target="_blank">{{ user.profile.website }}</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- 右侧：编辑表单 -->
+        <div class="col-md-8">
+            <div class="profile-edit">
+                <h3>编辑个人资料</h3>
+
+                <!-- 个人资料编辑表单 -->
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <!-- 用户基本信息表单 -->
+                    <div class="form-section">
+                        <h4>基本信息</h4>
+
+                        <!-- 用户名字段 -->
+                        <div class="form-group">
+                            <label for="{{ user_form.username.id_for_label }}">用户名</label>
+                            {{ user_form.username }}
+                            {% if user_form.username.errors %}
+                            <div class="text-danger">
+                                {% for error in user_form.username.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- 邮箱字段 -->
+                        <div class="form-group">
+                            <label for="{{ user_form.email.id_for_label }}">电子邮箱</label>
+                            {{ user_form.email }}
+                            {% if user_form.email.errors %}
+                            <div class="text-danger">
+                                {% for error in user_form.email.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- 个人资料信息表单 -->
+                    <div class="form-section">
+                        <h4>个人资料</h4>
+
+                        <!-- 头像字段 -->
+                        <div class="form-group">
+                            <label for="{{ profile_form.avatar.id_for_label }}">头像</label>
+                            {{ profile_form.avatar }}
+                            {% if profile_form.avatar.errors %}
+                            <div class="text-danger">
+                                {% for error in profile_form.avatar.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- 个人简介字段 -->
+                        <div class="form-group">
+                            <label for="{{ profile_form.bio.id_for_label }}">个人简介</label>
+                            {{ profile_form.bio }}
+                            {% if profile_form.bio.errors %}
+                            <div class="text-danger">
+                                {% for error in profile_form.bio.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- 网站字段 -->
+                        <div class="form-group">
+                            <label for="{{ profile_form.website.id_for_label }}">个人网站</label>
+                            {{ profile_form.website }}
+                            {% if profile_form.website.errors %}
+                            <div class="text-danger">
+                                {% for error in profile_form.website.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- 提交按钮 -->
+                    <button type="submit" class="btn btn-primary">保存更改</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

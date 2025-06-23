@@ -18,21 +18,45 @@ mysite/                  # 项目根目录
 │   ├── __init__.py      # 空文件，标识Python包
 │   ├── admin.py         # Django管理后台配置
 │   ├── apps.py          # 应用配置
+│   ├── forms.py         # 表单定义
 │   ├── migrations/      # 数据库迁移文件目录
-│   │   └── __init__.py  # 空文件，标识Python包
+│   │   ├── __init__.py  # 空文件，标识Python包
+│   │   └── ...          # 其他迁移文件
 │   ├── models.py        # 数据模型定义
+│   ├── templatetags/    # 自定义模板标签目录
+│   │   ├── __init__.py  # 空文件，标识Python包
+│   │   └── blog_tags.py # 自定义模板标签和过滤器
 │   ├── tests.py         # 测试代码
 │   ├── urls.py          # 应用URL配置
 │   └── views.py         # 视图函数/类
 │
+├── media/               # 用户上传的媒体文件目录
+│   └── profile_avatars/ # 用户头像存储目录
+│
 ├── templates/           # 全局模板目录
-│   ├── base.html        # 基础模板
-│   └── blog/            # 应用专用模板
-│       ├── index.html   # 博客首页模板
-│       └── detail.html  # 博客详情页模板
+│   ├── blog/            # 应用专用模板
+│   │   ├── base.html    # 基础模板
+│   │   ├── profile.html # 用户个人资料页面
+│   │   └── post/        # 文章相关模板
+│   │       ├── detail.html            # 文章详情页模板
+│   │       ├── list.html              # 文章列表页模板
+│   │       ├── post_form.html         # 文章创建/编辑表单模板
+│   │       ├── post_confirm_delete.html # 文章删除确认模板
+│   │       └── includes/              # 可复用模板片段
+│   │           ├── comment_form.html  # 评论表单模板
+│   │           └── comment_list.html  # 评论列表模板
+│   ├── pagination.html  # 分页模板
+│   └── registration/    # 用户认证相关模板
+│       ├── login.html   # 登录页面
+│       ├── register.html # 注册页面
+│       ├── password_reset_form.html      # 密码重置表单
+│       ├── password_reset_done.html      # 密码重置邮件发送成功页面
+│       ├── password_reset_confirm.html   # 密码重置确认页面
+│       └── password_reset_complete.html  # 密码重置完成页面
 │
 └── static/              # 静态文件目录
     ├── css/             # CSS文件
+    │   └── blog.css     # 博客样式文件
     ├── js/              # JavaScript文件
     └── images/          # 图片文件
 ```
@@ -153,7 +177,7 @@ mysite/                  # 项目根目录
 
 ### 实践任务
 - [✓] 创建用户注册和登录页面
-- [ ] 实现用户个人资料页面
+- [✓] 实现用户个人资料页面
 - [✓] 添加权限控制(只有作者可以编辑文章)
 - [ ] 实现管理员特殊权限
 
@@ -192,8 +216,8 @@ mysite/                  # 项目根目录
 - [ ] 中间件执行顺序
 
 ### 信号系统
-- [ ] 学习内置信号(pre_save, post_save等)
-- [ ] 连接信号接收器
+- [✓] 学习内置信号(pre_save, post_save等)
+- [✓] 连接信号接收器
 - [ ] 创建自定义信号
 - [ ] 使用信号实现解耦功能
 
@@ -221,7 +245,7 @@ mysite/                  # 项目根目录
 - [✓] 配置静态文件目录
 - [ ] 使用collectstatic命令
 - [✓] 添加CSS和JavaScript
-- [ ] 处理用户上传文件
+- [✓] 处理用户上传文件
 
 ### 部署准备
 - [ ] 配置生产环境设置
@@ -241,7 +265,7 @@ mysite/                  # 项目根目录
 - [✓] 用户认证与权限管理
 - [✓] 内容创建、编辑、发布
 - [✓] 评论与互动系统
-- [ ] 文件上传与管理
+- [✓] 文件上传与管理
 - [ ] 搜索与过滤功能
 - [ ] RESTful API
 - [ ] 后台管理界面定制

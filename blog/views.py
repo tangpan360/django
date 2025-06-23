@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post, Category
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -7,8 +7,9 @@ from django.urls import reverse_lazy
 from django.views.generic.edit import FormMixin
 from .forms import CommentForm
 from django.contrib import messages
-from .forms import UserRegistrationForm
+from .forms import UserRegistrationForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 from django.http import HttpResponse
@@ -262,3 +263,46 @@ class RegisterView(CreateView):
         # 自动登录新注册的用户
         login(self.request, user)
         return super().form_valid(form)
+    
+@login_required
+def profile(request):
+    """
+    用户个人资料视图
+
+    显示和更新用户的个人资料
+    需要用户登录才能访问（由login_required装饰器保证
+    """
+    # 如果是POST请求，处理表单提交
+    if request.method == 'POST':
+        # 创建表单实例并填充当前用户数据
+        user_form = UserUpdateForm(request.POST, instance=request.user)
+        # 创建个人资料表单实例，包括文件上传
+        profile_form = ProfileUpdateForm(
+            request.POST,
+            request.FILES,
+            instance=request.user.profile
+            )
+        
+        # 验证表单
+        if user_form.is_valid() and profile_form.is_valid():
+            # 保存表单数据
+            user_form.save()
+            profile_form.save()
+            # 添加成功消息
+            messages.success(request, '您的个人资料已更新！')
+            # 重定向到个人资料页面
+            return redirect('profile')
+    
+    else:
+        # GET请求，创建表单实例并填充当前用户数据
+        user_form = UserUpdateForm(instance=request.user)
+        profile_form = ProfileUpdateForm(instance=request.user.profile)
+
+    # 准备上下文数据
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form,
+    }
+
+    # 渲染模板
+    return render(request, 'blog/profile.html', context)

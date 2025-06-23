@@ -1,0 +1,25 @@
+"""
+此脚本用于为系统中所有没有个人资料的用户创建默认的个人资料。
+通常在以下情况下使用：
+1. 首次部署应用时，为已有用户创建个人资料
+2. 在添加个人资料功能后，为之前创建的用户补全资料
+3. 在数据迁移或系统升级后，确保所有用户都有个人资料
+
+使用方法：
+1. 在Django项目的根目录下运行：python manage.py shell
+2. 复制并粘贴此脚本到shell中执行
+3. 脚本会自动为所有没有个人资料的用户创建默认资料
+"""
+
+from django.contrib.auth.models import User
+from blog.models import Profile
+
+# 为没有个人资料的用户创建个人资料
+for user in User.objects.all():
+    try:
+        # 尝试访问用户的个人资料
+        profile = user.profile
+    except:
+        # 如果不存在，则创建一个
+        Profile.objects.create(user=user)
+        print(f"为用户 {user.username} 创建了个人资料")

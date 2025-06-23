@@ -18,7 +18,9 @@ from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse  # 导入HttpResponse
 from django.contrib.auth import views as auth_views
-from blog.views import RegisterView
+from blog.views import RegisterView, profile
+from django.conf import settings
+from django.conf.urls.static import static
 
 # 创建一个简单的根路径视图函数
 def home(request):
@@ -69,4 +71,10 @@ urlpatterns = [
             template_name='registration/password_reset_complete.html'
         ),
         name='password_reset_complete'),
+
+    path('profile/', profile, name='profile'),
 ]
+
+# 仅在开发环境中添加没提文件URL配置
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

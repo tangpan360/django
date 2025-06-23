@@ -46,6 +46,8 @@
             <!-- 根据用户登录状态显示不同内容 -->
             {% if user.is_authenticated %}
                 <p>你好，{{ user.username }}！
+                    <!-- 添加个人资料链接 -->
+                    <a href="{% url 'profile' %}">个人资料</a>
                     <!-- 使用表单提交而不是链接 -->
                     <form method="post" action="{% url 'logout' %}" style=""display:inline;>
                         {% csrf_token %}

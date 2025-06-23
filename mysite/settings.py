@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -133,3 +134,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # 设置默认发件人邮箱，用于发送系统邮件
 DEFAULT_FROM_EMAIL = 'noreply@myblog.com'
+
+# 媒体文件配置
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

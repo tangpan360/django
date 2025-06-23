@@ -125,3 +125,11 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # 登录成功后重定向到博客首页
 LOGIN_REDIRECT_URL = '/blog/'
+
+# 邮件设置
+# 使用控制台后端，邮件内容会输出到终端而不是真正发送
+# 这对开发环境非常有用，可以查看邮件内容而无需真正发送
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# 设置默认发件人邮箱，用于发送系统邮件
+DEFAULT_FROM_EMAIL = 'noreply@myblog.com'

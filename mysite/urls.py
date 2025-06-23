@@ -34,4 +34,39 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
     # 注册URL
     path('register/', RegisterView.as_view(), name='register'),
+
+    # 密码重置视图 - 输入邮箱的表单页面
+    path('password_reset/',
+        auth_views.PasswordResetView.as_view(
+            # 指定使用的模板
+            template_name='registration/password_reset_form.html',
+            # 指定邮件主题模板
+            subject_template_name='registration/password_reset_subject.txt',
+            # 指定邮件内容模板
+            email_template_name='registration/password_reset_email.html',
+            # 成功后重定向的URL名称
+            success_url='/password_reset/done/'
+        ),
+        name='password_reset'),
+    # 密码重置邮件发送成功页面
+    path('password_reset/done/',
+        auth_views.PasswordResetDoneView.as_view(
+            template_name='registration/password_reset_done.html'
+        ),
+        name='password_reset_done'),
+
+    # 密码重置确认页面
+    path('reset/<uidb64>/<token>/',
+        auth_views.PasswordResetConfirmView.as_view(
+            template_name='registration/password_reset_confirm.html',
+            success_url='/reset/done/'
+        ),
+        name='password_reset_confirm'),
+
+    # 密码重置完成页面
+    path('reset/done/',
+        auth_views.PasswordResetCompleteView.as_view(
+            template_name='registration/password_reset_complete.html'
+        ),
+        name='password_reset_complete'),
 ]
